@@ -5,6 +5,8 @@
 #
 # Original source: https://github.com/mundialis/actinia_core/blob/master/scripts/ace
 #
+# TODO: add GRASS GIS parser support to make it work with g.extension
+#
 #######
 # actinia-core - an open source REST API for scalable, distributed, high
 # performance processing of geographical data that uses GRASS GIS for
