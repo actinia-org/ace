@@ -53,9 +53,9 @@ export ACTINIA_URL='https://actinia.mundialis.de/latest'
 """
 
 # Example script for actinia with import and export options
-# grass77 ~/grassdata/nc_spm_08/user1/
+# grass78 ~/grassdata/nc_spm_08/user1/
 import_export = """
-g.region raster=elev+https://storage.googleapis.com/graas-geodata/elev_ned_30m.tif -p
+g.region raster=elev@https://storage.googleapis.com/graas-geodata/elev_ned_30m.tif -p
 r.univar map=elev
 r.info elev
 r.slope.aspect elevation=elev slope=slope_elev+GTiff
@@ -63,7 +63,7 @@ r.info slope_elev
 """
 
 # Example script for actinia with export options
-# grass77 ~/grassdata/nc_spm_08/user1/
+# grass78 ~/grassdata/nc_spm_08/user1/
 export_script = """
 # Example script for actinia shell interface
 g.region raster=elevation -p
@@ -546,7 +546,7 @@ def main(script: str, version: bool, list_jobs: str, info_job: str,
 
       \b
       # Import the web resource and set the region to the imported map
-      g.region raster=elev+https://storage.googleapis.com/graas-geodata/elev_ned_30m.tif -ap
+      g.region raster=elev@https://storage.googleapis.com/graas-geodata/elev_ned_30m.tif -ap
       # Compute univariate statistics
       r.univar map=elev
       r.info elev
@@ -558,9 +558,9 @@ def main(script: str, version: bool, list_jobs: str, info_job: str,
 
         ace --script commands.sh
 
-    Run the script commands.sh in the location *latlong* on the actinia server:
+    Run the script commands.sh in the location *switching* on the actinia server:
 
-        ace --location latlong --script commands.sh
+        ace --location latlong_wgs84 --script commands.sh
 
     List all running jobs of the current user
 
