@@ -6,13 +6,203 @@
 <p>
 The ace tool allows the execution of a single GRASS GIS command or
 a list of GRASS GIS commands on an actinia REST service
-(https://actinia.mundialis.de/). In addition it provides job management,
-the ability to list locations, mapsets and map layer the user has
-access to as well as the creation and deletion of mapsets.
+(<a href="https://actinia.mundialis.de/">https://actinia.mundialis.de/</a>).
+In addition it provides job management, the ability to list locations,
+mapsets and map layer the user has access to as well as the creation
+and deletion of mapsets.
 
 <p>
 The ace tool must be executed in an active GRASS GIS session and
 will use the current location of this session to access the actinia service.
+
+<h2>NOTES</h2>
+
+The <em>ace</em> tool allows the execution of single GRASS GIS command
+or a list of GRASS GIS commands on an actinia REST service. In addition
+it provides job management and the ability to list locations, mapsets
+and map layer the user has access to.
+
+<p>
+This tool must be executed in an active GRASS GIS session
+<!--
+and will use the current location to access the actinia service. The current location can
+be overwritten
+-->
+specified by the <b>location<b> option. All commands will be executed
+per default in an ephemeral database, hence generated output must be
+exported using augmented GRASS commands. The flag <b>-p</b> allows the
+execution of commands in the persistent user database. It should be used
+with <b>location</b> option.
+
+<p>
+The user must setup the following environmental variables to specify the
+actinia server and credentials (example):
+
+<div class="code"><pre>
+export ACTINIA_USER='demouser'
+export ACTINIA_PASSWORD='gu3st!pa55w0rd'
+export ACTINIA_URL='https://actinia.mundialis.de'
+</pre></div>
+
+<p>
+This tool takes a GRASS GIS command as argument (<em>grass_command</em>).
+In addition, there are options to:
+
+<ol>
+<li>execute a list of commands from an input script file.</li>
+<li>perform job management on the actinia server (list, info, kill)</li>
+<li>show the version of the actinia service</li>
+<li>show the locations and mapsets the user has access to</li>
+<li>show map layers of specific location/mapset</li>
+<li>create new persistent user specific locations</li>
+<li>create new persistent user specific mapsets</li>
+</ol>
+
+GRASS GIS commands can be augmented with actinia specific extensions. The
+<b>@</b> operator can be specified for an input parameter to import a web
+located resource and to specify the export of an output parameter.
+
+<h2>EXAMPLES</h2>
+
+<!--
+Single command example:
+
+<div class="code"><pre>
+ace grass_command="g.list raster"
+</pre></div>
+-->
+
+Single command example with location option:
+
+<div class="code"><pre>
+ace grass_command="g.list raster" location="nc_spm_08"
+</pre></div>
+
+The following commands from a script will import a raster layer from an
+internet source as raster map *elev*, sets the computational region to the
+map and computes the slope. Additional information about the raster layer
+are requested with <em>r.info</em> (save as text file <em>commands.sh</em>):
+
+<div class="code"><pre>
+# Import the web resource and set the region to the imported map
+g.region raster=elev@https://storage.googleapis.com/graas-geodata/elev_ned_30m.tif -ap
+# Compute univariate statistics
+r.univar map=elev
+r.info elev
+# Compute the slope of the imported map and export it as Cloud Optimized GeoTIFF
+r.slope.aspect elevation=elev slope=slope_elev+COG
+r.info slope_elev
+</pre></div>
+
+<!--
+<p>
+Run the script <em>commands.sh</em> in the current location on the actinia server:
+
+<div class="code"><pre>
+ace script="commands.sh"
+</pre></div>
+-->
+
+<p>
+Run the script <em>commands.sh</em> in the location "nc_spm_08" on the actinia
+server:
+
+<div class="code"><pre>
+ace location="nc_spm_08" script="commands.sh"
+</pre></div>
+
+<p>
+List all running jobs of the current user:
+
+<div class="code"><pre>
+ace list-jobs="running"
+</pre></div>
+
+<p>
+Get information about a specific job:
+
+<div class="code"><pre>
+ace info-job="resource_id-3ce07606-cc77-4188-942e-5a5fbc8f1091"
+</pre></div>
+
+<p>
+Kill a running job:
+
+<div class="code"><pre>
+ace kill-job="resource_id-3ce07606-cc77-4188-942e-5a5fbc8f1091"
+</pre></div>
+
+<p>
+List all locations the user has access to:
+
+<div class="code"><pre>
+ace -l
+
+<p>
+List all mapsets in the specified location the user access to:
+
+<div class="code"><pre>
+ace -m location="nc_spm_08"
+</pre></div>
+
+<p>
+List all raster maps in mapset "PERMANENT" of the location "nc_spm_08":
+
+<div class="code"><pre>
+ace location="nc_spm_08" mapset="PERMANENT" -r
+</pre></div>
+
+<p>
+List all vector maps in mapsets PERMANENT of the location "nc_spm_08":
+
+<div class="code"><pre>
+ace location="nc_spm_08" mapset="PERMANENT" -v
+</pre></div>
+
+<p>
+List all strds in mapsets PERMANENT of the location "nc_spm_08":
+
+<div class="code"><pre>
+ace location="nc_spm_08" mapset="PERMANENT" -s
+</pre></div>
+
+<p>
+Create a new location "test_location" in the persistent user database:
+
+<div class="code"><pre>
+ace create-location="test_location 4326"
+</pre></div>
+
+<p>
+Delete "test_location" from the persistent user database:
+
+<div class="code"><pre>
+ace delete-location="test_location"
+</pre></div>
+
+<p>
+Create a new mapset in location "nc_spm_08" in the persistent user database:
+
+<div class="code"><pre>
+ace location="nc_spm_08" create-mapset="test_mapset"
+</pre></div>
+
+<p>
+Delete test_mapset mapset from location "nc_spm_08" in the persistent user
+database:
+
+<div class="code"><pre>
+ace location="nc_spm_08" delete-mapset="test_mapset"
+</pre></div>
+
+<p>
+Run command <em>g.list</em> in the persistent user database in location "nc_spm_08"
+mapset test_mapset:
+
+<div class="code"><pre>
+ace location="nc_spm_08 -p mapset="test_mapset" grass_commmand="g.list type=raster mapset=test_mapset"
+</pre></div>
+
 
 <h2>AUTHOR</h2>
 
@@ -20,5 +210,7 @@ Soeren Gebbert
 
 Original source: https://github.com/mundialis/actinia_core/blob/master/scripts/ace
 
+<p>
+GRASS GIS parser support: Markus Neteler, <a href="https://www.mundialis.de">mundialis</a>
 <p>
 <i>Last changed: $Date$</i>
