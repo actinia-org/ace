@@ -345,11 +345,11 @@ def list_user_locations():
         pprint(data)
 
 
-def list_user_mapsets():
+def list_user_mapsets(location):
     """List all mapsets of a specific location
     """
 
-    url = ACTINIA_URL + "/api/v1/locations/{LOCATION}/mapsets"
+    url = f"{ACTINIA_URL}/api/v1/locations/{location}/mapsets"
     r = requests.get(url, auth=ACTINIA_AUTH)
 
     data = simplejson.loads(r.text)
@@ -687,7 +687,7 @@ def main():
         if script:
             execute_script(script=script, mapset=persistent)
         elif list_mapsets:
-            list_user_mapsets()
+            list_user_mapsets(location)
         elif list_raster:
             list_maps_of_mapsets(mapset=list_raster, map_type="raster_layers")
         elif list_vector:
@@ -731,7 +731,7 @@ def main():
     elif render_strds:
         show_rendered_map(map_name=render_strds, map_type="strds")
     elif list_mapsets:
-        list_user_mapsets()
+        list_user_mapsets(location)
     elif create_mapset:
         create_persistent_mapset(mapset=create_mapset)
     elif delete_mapset:
