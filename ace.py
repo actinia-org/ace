@@ -77,146 +77,146 @@ r.neighbors input=elevation output=neighbour_elev+GTiff
 r.info neighbour_elev
 """
 
-# %Module
-# % description: Allows the execution of single GRASS GIS command or a list of GRASS GIS commands on an actinia REST service.
-# % keyword: general
-# % keyword: API
-# % keyword: REST
-# %End
+#%Module
+#% description: Allows the execution of single GRASS GIS command or a list of GRASS GIS commands on an actinia REST service.
+#% keyword: general
+#% keyword: API
+#% keyword: REST
+#%End
 
-# %flag
-# % key: a
-# % description: Request the version of the actinia server
-# %end
+#%flag
+#% key: a
+#% description: Request the version of the actinia server
+#%end
 
-# %flag
-# % key: d
-# % description: Dry run: just print the JSON request and do not send the generated request to the server
-# %end
+#%flag
+#% key: d
+#% description: Dry run: just print the JSON request and do not send the generated request to the server
+#%end
 
-# %flag
-# % key: l
-# % description: List locations the user has access to
-# %end
+#%flag
+#% key: l
+#% description: List locations the user has access to
+#%end
 
-# %flag
-# % key: m
-# % description: List mapsets within specified location
-# %end
+#%flag
+#% key: m
+#% description: List mapsets within specified location
+#%end
 
-# %flag
-# % key: p
-# % description: Use a persistent database location/mapset for processing on the actinia server
-# %end
+#%flag
+#% key: p
+#% description: Use a persistent database location/mapset for processing on the actinia server
+#%end
 
-# %flag
-# % key: r
-# % description: List raster maps of mapsets of specified location
-# %end
+#%flag
+#% key: r
+#% description: List raster maps of mapsets of specified location
+#%end
 
-# %flag
-# % key: v
-# % description: List vector maps of mapsets of specified location
-# %end
+#%flag
+#% key: v
+#% description: List vector maps of mapsets of specified location
+#%end
 
-# %flag
-# % key: s
-# % description: List STRDS of mapsets of specified location
-# %end
+#%flag
+#% key: s
+#% description: List STRDS of mapsets of specified location
+#%end
 
-# %option
-# % key: grass_command
-# % type: string
-# % description: GRASS GIS command to be executed
-# %end
+#%option
+#% key: grass_command
+#% type: string
+#% description: GRASS GIS command to be executed
+#%end
 
-# %option
-# % key: script
-# % type: string
-# % description: Script to be executed
-# % label: Script file from which all all commands will be executed on the actinia server
-# %end
+#%option
+#% key: script
+#% type: string
+#% description: Script to be executed
+#% label: Script file from which all all commands will be executed on the actinia server
+#%end
 
-# %option
-# % key: list_jobs
-# % options: all,accepted,running,terminated,finished,error
-# % description: List all jobs of the user
-# %end
+#%option
+#% key: list_jobs
+#% options: all,accepted,running,terminated,finished,error
+#% description: List all jobs of the user
+#%end
 
-# %option
-# % key: info_job
-# % description: Show information about a job (use job-ID)
-# %end
+#%option
+#% key: info_job
+#% description: Show information about a job (use job-ID)
+#%end
 
-# %option
-# % key: kill_job
-# % description: Kill a job (use job-ID)
-# %end
+#%option
+#% key: kill_job
+#% description: Kill a job (use job-ID)
+#%end
 
-# %option
-# % key: location
-# % description: TODO
-# % label: Use this location name for processing on the actinia server
-# %end
+#%option
+#% key: location
+#% description: TODO
+#% label: Use this location name for processing on the actinia server
+#%end
 
-# %option
-# % key: mapset
-# % description: TODO
-# % label: Use this mapset name for processing on the actinia server
-# %end
+#%option
+#% key: mapset
+#% description: TODO
+#% label: Use this mapset name for processing on the actinia server
+#%end
 
-# %option
-# % key: create_location
-# % description: TODO
-# % label: Create new location in the persistent database of the actinia server using the provided EPSG code, e.g.: create_location="latlon 4326"
-# %end
+#%option
+#% key: create_location
+#% description: TODO
+#% label: Create new location in the persistent database of the actinia server using the provided EPSG code, e.g.: create_location="latlon 4326"
+#%end
 
-# %option
-# % key: delete_location
-# % description: TODO
-# % label: Delete existing location from the actinia server
-# %end
+#%option
+#% key: delete_location
+#% description: TODO
+#% label: Delete existing location from the actinia server
+#%end
 
-# %option
-# % key: create_mapset
-# % description: TODO
-# % label: Create a new mapset in the persistent database of the actinia server using the specified location
-# %end
+#%option
+#% key: create_mapset
+#% description: TODO
+#% label: Create a new mapset in the persistent database of the actinia server using the specified location
+#%end
 
-# %option
-# % key: delete_mapset
-# % description: TODO
-# % label: Delete an existing mapset from the actinia server using the specified location
-# %end
+#%option
+#% key: delete_mapset
+#% description: TODO
+#% label: Delete an existing mapset from the actinia server using the specified location
+#%end
 
-# %option
-# % key: render_raster
-# % description: TODO
-# % label: Show a rendered image from a specific raster map
-# %end
+#%option
+#% key: render_raster
+#% description: TODO
+#% label: Show a rendered image from a specific raster map
+#%end
 
-# %option
-# % key: render_vector
-# % description: TODO
-# % label: Show a rendered image from a specific vector map
-# %end
+#%option
+#% key: render_vector
+#% description: TODO
+#% label: Show a rendered image from a specific vector map
+#%end
 
-# %option
-# % key: render_strds
-# % description: TODO
-# % label: Show a rendered image from a specific STRDS
-# %end
+#%option
+#% key: render_strds
+#% description: TODO
+#% label: Show a rendered image from a specific STRDS
+#%end
 
 ### ?? #% requires: grass_command, location
 
-# % rules
-# % requires: create_mapset, location
-# % requires: delete_mapset, location
-# % requires: -m, location
-# % requires: -r, location
-# % requires: -v, location
-# % requires: -s, location
-# %end
+#% rules
+#% requires: create_mapset, location
+#% requires: delete_mapset, location
+#% requires: -m, location
+#% requires: -r, location
+#% requires: -v, location
+#% requires: -s, location
+#%end
 
 # Default values
 ACTINIA_USER = 'demouser'
