@@ -209,9 +209,9 @@ r.info neighbour_elev
 #% requires: create_mapset, location
 #% requires: delete_mapset, location
 #% requires: -m, location
-#% requires: -r, location
-#% requires: -v, location
-#% requires: -s, location
+#% requires_all: -r, location, mapset
+#% requires_all: -v, location, mapset
+#% requires_all: -s, location, mapset
 #%end
 
 # Default values
@@ -367,7 +367,6 @@ def list_maps_of_mapsets(mapset: str, map_type: str):
         map_type: The map type: raster_layers, vector_layers, strds
 
     """
-
     # Read location and mapset
     # mapset = grass.read_command("g.mapset", "p").strip()
 
@@ -641,7 +640,7 @@ def main():
     list_raster = flags["r"]
     list_vector = flags["v"]
     list_strds = flags["s"]
-    persistent = False
+    mapset = False
 
     grass_command = options["grass_command"]
     script = options["script"]
@@ -650,7 +649,7 @@ def main():
     info_job = options["info_job"]
     location = options["location"]
     if options["mapset"]:
-        persistent = options["mapset"]
+        mapset = options["mapset"]
     create_mapset = options["create_mapset"]
     delete_mapset = options["delete_mapset"]
     create_location = options["create_location"]
@@ -685,15 +684,15 @@ def main():
     if location:
         setup_location(location=location)
         if script:
-            execute_script(script=script, mapset=persistent)
+            execute_script(script=script, mapset=mapset)
         elif list_mapsets:
             list_user_mapsets(location)
-        elif list_raster:
-            list_maps_of_mapsets(mapset=list_raster, map_type="raster_layers")
-        elif list_vector:
-            list_maps_of_mapsets(mapset=list_vector, map_type="vector_layers")
-        elif list_strds:
-            list_maps_of_mapsets(mapset=list_strds, map_type="strds")
+        elif list_raster and mapset is not False:
+            list_maps_of_mapsets(mapset=mapset, map_type="raster_layers")
+        elif list_vector and mapset is not False:
+            list_maps_of_mapsets(mapset=mapset, map_type="vector_layers")
+        elif list_strds and mapset is not False:
+            list_maps_of_mapsets(mapset=mapset, map_type="strds")
         elif render_raster:
             show_rendered_map(map_name=render_raster, map_type="raster_layers")
         elif render_vector:
@@ -707,7 +706,7 @@ def main():
         else:
             # TODO: fails with r3 (r.g. r3.info
             if is_grass_command(grass_command):
-                send_poll_commands(commands=[split_grass_command(grass_command), ], mapset=persistent)
+                send_poll_commands(commands=[split_grass_command(grass_command), ], mapset=mapset)
     elif list_jobs:
         if not list_jobs:
             list_jobs = "all"
@@ -737,12 +736,12 @@ def main():
     elif delete_mapset:
         delete_persistent_mapset(mapset=delete_mapset)
     elif script:
-        execute_script(script=script, mapset=persistent)
+        execute_script(script=script, mapset=mapset)
     else:
         if len(sys.argv) > 1:
             # TODO: fails with r3 (r.g. r3.info
             if is_grass_command(grass_command):
-                send_poll_commands(commands=[list(grass_command), ], mapset=persistent)
+                send_poll_commands(commands=[list(grass_command), ], mapset=mapset)
         else:
             actinia_version()
 
