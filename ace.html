@@ -79,7 +79,7 @@ ace grass_command="g.list raster" location="nc_spm_08"
 </pre></div>
 
 The following commands from a script will import a raster layer from an
-internet source as raster map *elev*, sets the computational region to the
+internet source as raster map "elev", sets the computational region to the
 map and computes the slope. Additional information about the raster layer
 are requested with <em>r.info</em> (save as text file <em>commands.sh</em>):
 
@@ -189,7 +189,7 @@ ace location="nc_spm_08" create_mapset="test_mapset"
 </pre></div>
 
 <p>
-Delete test_mapset mapset from location "nc_spm_08" in the persistent user
+Delete "test_mapset" mapset from location "nc_spm_08" in the persistent user
 database:
 
 <div class="code"><pre>
@@ -198,10 +198,10 @@ ace location="nc_spm_08" delete_mapset="test_mapset"
 
 <p>
 Run command <em>g.list</em> in the persistent user database in location "nc_spm_08"
-mapset test_mapset:
+mapset "test_mapset":
 
 <div class="code"><pre>
-ace location="nc_spm_08" -p mapset="test_mapset" grass_command="g.list type=raster mapset=test_mapset"
+ace location="nc_spm_08" mapset="test_mapset" grass_command="g.list type=raster mapset=test_mapset"
 </pre></div>
 
 
