@@ -12,7 +12,7 @@
 # performance processing of geographical data that uses GRASS GIS for
 # computational tasks. For details, see https://actinia.mundialis.de/
 #
-# Copyright (c) 2018 Sören Gebbert and mundialis GmbH & Co. KG
+# Copyright (c) 2018-2021 Sören Gebbert and mundialis GmbH & Co. KG
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -29,54 +29,6 @@
 #
 #######
 
-import re
-import requests
-import simplejson
-import time
-import sys
-import os
-import grass.script as grass
-import subprocess
-from pprint import pprint
-from typing import List, Optional
-
-__license__ = "GPLv3"
-__author__ = "Soeren Gebbert"
-__copyright__ = "Copyright 2018-2021, Soeren Gebbert"
-__maintainer__ = "Markus Neteler"
-__email__ = "neteler@mundialis.de"
-
-"""
-export ACTINIA_USER='demouser'
-export ACTINIA_PASSWORD='gu3st!pa55w0rd'
-export ACTINIA_URL='https://actinia.mundialis.de'
-"""
-
-# Example script for actinia with import and export options
-# grass78 ~/grassdata/nc_spm_08/user1/
-import_export = """
-g.region raster=elev@https://storage.googleapis.com/graas-geodata/elev_ned_30m.tif -p
-r.univar map=elev
-r.info elev
-r.slope.aspect elevation=elev slope=slope_elev+COG
-r.info slope_elev
-"""
-
-# Example script for actinia with export options
-# grass78 ~/grassdata/nc_spm_08/user1/
-export_script = """
-# Example script for actinia shell interface
-g.region raster=elevation -p
-r.univar map=elevation
-r.info elevation
-r.slope.aspect -a elevation=elevation slope=slope_elev+GTiff
-# r.mapcalc expression=slope_elev=100
-r.info slope_elev
-r.watershed elevation=elevation accumulation=acc+GTiff
-r.info acc
-r.neighbors input=elevation output=neighbour_elev+GTiff
-r.info neighbour_elev
-"""
 
 #%Module
 #% description: Allows the execution of single GRASS GIS command or a list of GRASS GIS commands on an actinia REST service.
@@ -134,6 +86,18 @@ r.info neighbour_elev
 #%end
 
 #%option
+#% key: location
+#% description: Location name
+#% label: Use this location name for processing on the actinia server
+#%end
+
+#%option
+#% key: mapset
+#% description: Mapset name
+#% label: Use this persistent mapset name for processing on the actinia server
+#%end
+
+#%option
 #% key: list_jobs
 #% options: all,accepted,running,terminated,finished,error
 #% description: List all jobs of the user
@@ -150,60 +114,46 @@ r.info neighbour_elev
 #%end
 
 #%option
-#% key: location
-#% description: TODO
-#% label: Use this location name for processing on the actinia server
-#%end
-
-#%option
-#% key: mapset
-#% description: TODO
-#% label: Use this persistent mapset name for processing on the actinia server
-#%end
-
-#%option
 #% key: create_location
-#% description: TODO
+#% description: Create new location with EPSG code
 #% label: Create new location in the persistent database of the actinia server using the provided EPSG code, e.g.: create_location="latlon 4326"
 #%end
 
 #%option
 #% key: delete_location
-#% description: TODO
+#% description: Delete specified location
 #% label: Delete existing location from the actinia server
 #%end
 
 #%option
 #% key: create_mapset
-#% description: TODO
+#% description: Create specified mapset in location
 #% label: Create a new mapset in the persistent database of the actinia server using the specified location
 #%end
 
 #%option
 #% key: delete_mapset
-#% description: TODO
+#% description: Delete existing mapset
 #% label: Delete an existing mapset from the actinia server using the specified location
 #%end
 
 #%option
 #% key: render_raster
-#% description: TODO
+#% description: Render raster map
 #% label: Show a rendered image from a specific raster map
 #%end
 
 #%option
 #% key: render_vector
-#% description: TODO
+#% description: Render vector map
 #% label: Show a rendered image from a specific vector map
 #%end
 
 #%option
 #% key: render_strds
-#% description: TODO
+#% description: Render STRDS
 #% label: Show a rendered image from a specific STRDS
 #%end
-
-### ?? #% requires: grass_command, location
 
 #% rules
 #% requires: create_mapset, location
@@ -213,6 +163,55 @@ r.info neighbour_elev
 #% requires_all: -v, location, mapset
 #% requires_all: -s, location, mapset
 #%end
+
+import re
+import requests
+import simplejson
+import time
+import sys
+import os
+import grass.script as grass
+import subprocess
+from pprint import pprint
+from typing import List, Optional
+
+__license__ = "GPLv3"
+__author__ = "Soeren Gebbert"
+__copyright__ = "Copyright 2018-2021, Soeren Gebbert"
+__maintainer__ = "Markus Neteler"
+__email__ = "neteler@mundialis.de"
+
+"""
+export ACTINIA_USER='demouser'
+export ACTINIA_PASSWORD='gu3st!pa55w0rd'
+export ACTINIA_URL='https://actinia.mundialis.de'
+"""
+
+# Example script for actinia with import and export options
+# grass78 ~/grassdata/nc_spm_08/user1/
+import_export = """
+g.region raster=elev@https://storage.googleapis.com/graas-geodata/elev_ned_30m.tif -p
+r.univar map=elev
+r.info elev
+r.slope.aspect elevation=elev slope=slope_elev+COG
+r.info slope_elev
+"""
+
+# Example script for actinia with export options
+# grass78 ~/grassdata/nc_spm_08/user1/
+export_script = """
+# Example script for actinia shell interface
+g.region raster=elevation -p
+r.univar map=elevation
+r.info elevation
+r.slope.aspect -a elevation=elevation slope=slope_elev+GTiff
+# r.mapcalc expression=slope_elev=100
+r.info slope_elev
+r.watershed elevation=elevation accumulation=acc+GTiff
+r.info acc
+r.neighbors input=elevation output=neighbour_elev+GTiff
+r.info neighbour_elev
+"""
 
 # Default values
 ACTINIA_USER = 'demouser'
