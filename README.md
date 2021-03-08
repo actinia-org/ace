@@ -1,7 +1,12 @@
 # ace
  ace - actinia command execution tool (for g.extension) 
 
-**TODO: add GRASS GIS parser support to make it work with g.extension**
+## Installation
 
+`g.extension ace url=https://github.com/mundialis/ace`
 
-For usage details, see [https://github.com/mundialis/actinia_core/blob/master/scripts/README.md](https://github.com/mundialis/actinia_core/blob/master/scripts/README.md)
+For usage details, see after installation:
+
+`g.manual ace`
+
+and [https://github.com/mundialis/actinia_core/blob/master/scripts/README.md](https://github.com/mundialis/actinia_core/blob/master/scripts/README.md)
