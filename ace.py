@@ -29,6 +29,7 @@
 #
 #######
 
+import re
 import requests
 import simplejson
 import time
@@ -467,6 +468,28 @@ def show_rendered_map(map_name: str, map_type: str):
         image.show()
 
 
+def split_grass_command(grass_command: str):
+    """Split grass command at spaces exluding spaces in quotes. Additional for
+    e.g. r.mapcalc the quotes are removed from the GRASS option value if the
+    value starts and ends with quotes
+
+    Args:
+        grass_command: A string of a GRASS GIS command
+    Returns:
+        The splitted GRASS GIS command needed for create_actinia_process
+    """
+    SPACE_MATCHER = re.compile(r" (?=(?:[^\"']*[\"'][^\"']*[\"'])*[^\"']*$)")
+    EQUALS_MATCHER = re.compile(r"=(?=(?:[^\"']*[\"'][^\"']*[\"'])*[^\"']*$)")
+
+    tokens = SPACE_MATCHER.split(grass_command)
+    for i, token in enumerate(tokens):
+        if "=" in token and ("\'" in token or '\"' in token):
+            par, val = EQUALS_MATCHER.split(token)
+            if val.startswith(val[-1]):
+                tokens[i] = "%s=%s" % (par, val.strip('\"').strip("\'"))
+    return tokens
+
+
 def execute_script(script: str, mapset: str = None):
     """Execute a script with GRASS GIS commands
 
@@ -483,7 +506,7 @@ def execute_script(script: str, mapset: str = None):
         line = line.strip()
         # Get all lines that have no comments
         if line and "#" not in line[:1]:
-            tokens = line.split()
+            tokens = split_grass_command(line)
             commands.append(tokens)
 
     send_poll_commands(commands=commands, mapset=mapset)
@@ -572,11 +595,12 @@ def create_actinia_process(command: List[str]) -> Optional[dict]:
     """
     if not command:
         return None
+    if '--help' in command:
+        raise Exception("--help is not allowed inside grass_command: %s"
+                        % (str(command)))
 
     if "--json" not in command:
         command.append("--json")
-
-    # print(command)
 
     proc = subprocess.Popen(args=command, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                             stdin=subprocess.PIPE)
@@ -595,8 +619,21 @@ def create_actinia_process(command: List[str]) -> Optional[dict]:
     except:
         raise
 
+def is_grass_command(grass_command: str):
+    """Check if the given command is a GRASS GIS command
+
+    Args:
+        grass_command: A string of a GRASS GIS command
+    Returns:
+        True if the command is a GRASS GIS command otherwise False
+    """
+    if grass_command.split('.')[0] in ["r", "v", "i", "t", "g", "r3"]:
+        return True
+    else:
+        return False
 
 def main():
+
     version = flags["a"]
     dry_run = flags["d"]
     list_locations = flags["l"]
@@ -669,8 +706,8 @@ def main():
             delete_persistent_mapset(mapset=delete_mapset)
         else:
             # TODO: fails with r3 (r.g. r3.info
-            if grass_command[:2][0:2] in ["r.", "v.", "i.", "t.", "g.", "r3."]:
-                send_poll_commands(commands=[grass_command.split(" "), ], mapset=persistent)
+            if is_grass_command(grass_command):
+                send_poll_commands(commands=[split_grass_command(grass_command), ], mapset=persistent)
     elif list_jobs:
         if not list_jobs:
             list_jobs = "all"
@@ -704,7 +741,7 @@ def main():
     else:
         if len(sys.argv) > 1:
             # TODO: fails with r3 (r.g. r3.info
-            if grass_command[:2][0:2] in ["r.", "v.", "i.", "t.", "g.", "r3."]:
+            if is_grass_command(grass_command):
                 send_poll_commands(commands=[list(grass_command), ], mapset=persistent)
         else:
             actinia_version()
