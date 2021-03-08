@@ -105,11 +105,6 @@ r.info neighbour_elev
 #%end
 
 #%flag
-#% key: p
-#% description: Use a persistent database location/mapset for processing on the actinia server
-#%end
-
-#%flag
 #% key: r
 #% description: List raster maps of mapsets of specified location
 #%end
@@ -162,7 +157,7 @@ r.info neighbour_elev
 #%option
 #% key: mapset
 #% description: TODO
-#% label: Use this mapset name for processing on the actinia server
+#% label: Use this persistent mapset name for processing on the actinia server
 #%end
 
 #%option
@@ -609,7 +604,7 @@ def main():
     list_raster = flags["r"]
     list_vector = flags["v"]
     list_strds = flags["s"]
-    persistent = flags["p"]
+    persistent = False
 
     grass_command = options["grass_command"]
     script = options["script"]
@@ -617,7 +612,8 @@ def main():
     list_jobs = options["list_jobs"]
     info_job = options["info_job"]
     location = options["location"]
-    # ?? mapset = options["mapset"]
+    if options["mapset"]:
+        persistent = options["mapset"]
     create_mapset = options["create_mapset"]
     delete_mapset = options["delete_mapset"]
     create_location = options["create_location"]
