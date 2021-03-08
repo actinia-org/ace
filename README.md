@@ -3,7 +3,7 @@
 
 ## Installation
 
-`g.extension ace url=https://github.com/mundialis/ace`
+`g.extension extension=ace url=https://github.com/mundialis/ace`
 
 For usage details, see after installation:
 
