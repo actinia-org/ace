@@ -534,7 +534,7 @@ def send_poll_commands(commands: List[List[str]], mapset: str = None) -> None:
 
     print(url)
     print(PCHAIN)
-    print(ACTINIA_AUTH)
+    print(ACTINIA_USER)
 
     r = requests.post(url, json=PCHAIN, auth=ACTINIA_AUTH)
     try:
