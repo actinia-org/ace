@@ -185,6 +185,7 @@ __email__ = "neteler@mundialis.de"
 export ACTINIA_USER='demouser'
 export ACTINIA_PASSWORD='gu3st!pa55w0rd'
 export ACTINIA_URL='https://actinia.mundialis.de'
+export ACTINIA_VERSION='v2'
 """
 
 # Example script for actinia with import and export options
@@ -217,6 +218,7 @@ r.info neighbour_elev
 ACTINIA_USER = 'demouser'
 ACTINIA_PASSWORD = 'gu3st!pa55w0rd'
 ACTINIA_URL = 'https://actinia.mundialis.de'
+ACTINIA_VERSION = 'v2'
 ACTINIA_AUTH = (ACTINIA_USER, ACTINIA_PASSWORD)
 LOCATION = None
 MAPSET = None
@@ -234,11 +236,12 @@ def set_credentials():
     Returns:
 
     """
-    global ACTINIA_USER, ACTINIA_PASSWORD, ACTINIA_URL, ACTINIA_AUTH
+    global ACTINIA_USER, ACTINIA_PASSWORD, ACTINIA_URL, ACTINIA_AUTH, ACTINIA_VERSION
 
     act_user = os.getenv("ACTINIA_USER")
     act_pass = os.getenv("ACTINIA_PASSWORD")
     act_url = os.getenv("ACTINIA_URL")
+    act_ver = os.getenv("ACTINIA_VERSION")
 
     if act_user is not None:
         ACTINIA_USER = act_user
@@ -248,6 +251,9 @@ def set_credentials():
 
     if act_url is not None:
         ACTINIA_URL = act_url
+
+    if act_ver is not None:
+        ACTINIA_VERSION = act_ver
 
     ACTINIA_AUTH = (ACTINIA_USER, ACTINIA_PASSWORD)
 
@@ -275,7 +281,7 @@ def actinia_version():
         The version of the actinia server
 
     """
-    url = ACTINIA_URL + "/api/v1/version"
+    url = f"{ACTINIA_URL}/api/{ACTINIA_VERSION}/version"
     r = requests.get(url, auth=ACTINIA_AUTH)
     print(r.text)
 
@@ -288,7 +294,7 @@ def list_user_jobs(type_: str):
 
     """
 
-    url = ACTINIA_URL + f"/api/v1/resources/{ACTINIA_USER}"
+    url = f"{ACTINIA_URL}/api/{ACTINIA_VERSION}/resources/{ACTINIA_USER}"
     r = requests.get(url, json=PCHAIN, auth=ACTINIA_AUTH)
 
     data = simplejson.loads(r.text)
@@ -308,7 +314,8 @@ def show_user_job_info(resource_id: str):
 
     """
 
-    url = ACTINIA_URL + f"/api/v1/resources/{ACTINIA_USER}/{resource_id}"
+    url = f"{ACTINIA_URL}/api/{ACTINIA_VERSION}/resources/{ACTINIA_USER}/" \
+          f"{resource_id}"
     r = requests.get(url, auth=ACTINIA_AUTH)
 
     data = simplejson.loads(r.text)
@@ -323,7 +330,8 @@ def kill_user_job(resource_id: str):
 
     """
 
-    url = ACTINIA_URL + f"/api/v1/resources/{ACTINIA_USER}/{resource_id}"
+    url = f"{ACTINIA_URL}/api/{ACTINIA_VERSION}/resources/{ACTINIA_USER}" \
+        f"/{resource_id}"
     r = requests.delete(url, auth=ACTINIA_AUTH)
 
     data = simplejson.loads(r.text)
@@ -334,7 +342,7 @@ def list_user_locations():
     """List all locations the user has access to
     """
 
-    url = ACTINIA_URL + "/api/v1/locations"
+    url = f"{ACTINIA_URL}/api/{ACTINIA_VERSION}/locations"
     r = requests.get(url, auth=ACTINIA_AUTH)
 
     data = simplejson.loads(r.text)
@@ -348,7 +356,7 @@ def list_user_mapsets(location):
     """List all mapsets of a specific location
     """
 
-    url = f"{ACTINIA_URL}/api/v1/locations/{location}/mapsets"
+    url = f"{ACTINIA_URL}/api/{ACTINIA_VERSION}/locations/{location}/mapsets"
     r = requests.get(url, auth=ACTINIA_AUTH)
 
     data = simplejson.loads(r.text)
@@ -369,7 +377,8 @@ def list_maps_of_mapsets(mapset: str, map_type: str):
     # Read location and mapset
     # mapset = grass.read_command("g.mapset", "p").strip()
 
-    url = ACTINIA_URL + f"/api/v1/locations/{LOCATION}/mapsets/{mapset}/{map_type}"
+    url = f"{ACTINIA_URL}/api/{ACTINIA_VERSION}/locations/{LOCATION}/mapsets" \
+        f"/{mapset}/{map_type}"
     r = requests.get(url, auth=ACTINIA_AUTH)
 
     data = simplejson.loads(r.text)
@@ -389,7 +398,7 @@ def create_persistent_location(location: str, epsg_code: str) -> None:
     """
 
     print(f"Trying to create location {location}")
-    url = ACTINIA_URL + f"/api/v1/locations/{location}"
+    url = f"{ACTINIA_URL}/api/{ACTINIA_VERSION}/locations/{location}"
     r = requests.post(url, auth=ACTINIA_AUTH, json={"epsg": epsg_code})
     data = simplejson.loads(r.text)
     pprint(data)
@@ -404,7 +413,7 @@ def delete_persistent_location(location: str) -> None:
     """
 
     print(f"Trying to delete location {location}")
-    url = ACTINIA_URL + f"/api/v1/locations/{location}"
+    url = f"{ACTINIA_URL}/api/{ACTINIA_VERSION}/locations/{location}"
     r = requests.delete(url, auth=ACTINIA_AUTH)
     data = simplejson.loads(r.text)
     pprint(data)
@@ -419,7 +428,8 @@ def create_persistent_mapset(mapset: str):
     """
 
     print(f"Trying to create mapset {mapset}")
-    url = ACTINIA_URL + f"/api/v1/locations/{LOCATION}/mapsets/{mapset}"
+    url = f"{ACTINIA_URL}/api/{ACTINIA_VERSION}/locations/{LOCATION}/mapsets" \
+        f"/{mapset}"
     r = requests.post(url, auth=ACTINIA_AUTH)
     data = simplejson.loads(r.text)
     pprint(data)
@@ -434,7 +444,8 @@ def delete_persistent_mapset(mapset: str):
     """
 
     print(f"Trying to delete mapset {mapset}")
-    url = ACTINIA_URL + f"/api/v1/locations/{LOCATION}/mapsets/{mapset}"
+    url = f"{ACTINIA_URL}/api/{ACTINIA_VERSION}/locations/{LOCATION}/mapsets" \
+        f"/{mapset}"
     r = requests.delete(url, auth=ACTINIA_AUTH)
     data = simplejson.loads(r.text)
     pprint(data)
@@ -453,7 +464,8 @@ def show_rendered_map(map_name: str, map_type: str):
         mapset = grass.read_command("g.mapset", "p").strip()
 
     print(f"Trying to render {map_type} map {map_name} of mapset {mapset}")
-    url = ACTINIA_URL + f"/api/v1/locations/{LOCATION}/mapsets/{mapset}/{map_type}/{map_name}/render?width=800&height=600"
+    url = f"{ACTINIA_URL}/api/{ACTINIA_VERSION}/locations/{LOCATION}/mapsets" \
+        f"/{mapset}/{map_type}/{map_name}/render?width=800&height=600"
     r = requests.get(url, auth=ACTINIA_AUTH)
     if r.status_code != 200:
         pprint(r.text)
@@ -528,19 +540,30 @@ def send_poll_commands(commands: List[List[str]], mapset: str = None) -> None:
         return
 
     if mapset:
-        url = ACTINIA_URL + f"/api/v1/locations/{LOCATION}/mapsets/{mapset}/processing_async"
+        url = f"{ACTINIA_URL}/api/{ACTINIA_VERSION}/locations/{LOCATION}/" \
+            f"mapsets/{mapset}/processing_async"
     else:
-        url = ACTINIA_URL + f"/api/v1/locations/{LOCATION}/processing_async_export"
+        url = f"{ACTINIA_URL}/api/{ACTINIA_VERSION}/locations/{LOCATION}" \
+            "/processing_async_export"
 
     print(url)
     print(PCHAIN)
     print(ACTINIA_USER)
 
-    r = requests.post(url, json=PCHAIN, auth=ACTINIA_AUTH)
+    req = requests.post(url, json=PCHAIN, auth=ACTINIA_AUTH)
+    if req.status_code not in [200, 201]:
+        msg = ''
+        try:
+            data = simplejson.loads(req.text)
+            if 'message' in data:
+                msg = f": {data['message']}"
+        except Exception:
+            msg = req.text
+        grass.fatal(_(f"ERROR posting to url '{url}'{msg}"))
     try:
-        data = simplejson.loads(r.text)
-    except:
-        print(r.text)
+        data = simplejson.loads(req.text)
+    except Exception:
+        grass.fatal(_(req.text))
         return
 
     print("Resource status", data["status"])
@@ -614,8 +637,9 @@ def create_actinia_process(command: List[str]) -> Optional[dict]:
     try:
         actinia_proc = simplejson.loads(stdout_buff)
         return actinia_proc
-    except:
+    except Exception:
         raise
+
 
 def is_grass_command(grass_command: str):
     """Check if the given command is a GRASS GIS command
@@ -629,6 +653,7 @@ def is_grass_command(grass_command: str):
         return True
     else:
         return False
+
 
 def main():
 
