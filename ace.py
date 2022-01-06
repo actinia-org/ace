@@ -185,7 +185,7 @@ __email__ = "neteler@mundialis.de"
 export ACTINIA_USER='demouser'
 export ACTINIA_PASSWORD='gu3st!pa55w0rd'
 export ACTINIA_URL='https://actinia.mundialis.de'
-export ACTINIA_VERSION='v2'
+export ACTINIA_VERSION='v3'
 """
 
 # Example script for actinia with import and export options
@@ -218,7 +218,7 @@ r.info neighbour_elev
 ACTINIA_USER = 'demouser'
 ACTINIA_PASSWORD = 'gu3st!pa55w0rd'
 ACTINIA_URL = 'https://actinia.mundialis.de'
-ACTINIA_VERSION = 'v2'
+ACTINIA_VERSION = 'v3'
 ACTINIA_AUTH = (ACTINIA_USER, ACTINIA_PASSWORD)
 LOCATION = None
 MAPSET = None
