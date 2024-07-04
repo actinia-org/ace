@@ -1,5 +1,5 @@
 # ace
- ace - actinia command execution tool (for g.extension) 
+ ace - actinia command execution tool (for g.extension)
 
 **In the near future, this project will be archived and no longer developed** due to more modern alternatives:
 *  [Jupiter Notebooks](https://github.com/actinia-org/actinia-jupyter)
@@ -16,7 +16,7 @@ For usage details, see after installation:
 
 `g.manual ace`
 
-and [https://github.com/mundialis/actinia_core/blob/master/scripts/README.md](https://github.com/mundialis/actinia_core/blob/master/scripts/README.md)
+and [introduction.md](introduction.md)
 
 ## See also
 
